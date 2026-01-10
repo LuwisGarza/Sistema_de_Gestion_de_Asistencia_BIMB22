@@ -5,7 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ExpedientController;
-
+use App\Http\Controllers\PersonaController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -20,19 +20,23 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// 🔧 RUTAS CORREGIDAS:
+
+// 1. Rutas de perfil (solo auth)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// 2. Expedientes (solo auth)
 Route::middleware(['auth'])->group(function () {
-    // OPCIÓN A (Recomendada): Route::resource genera TODAS las rutas automáticamente
     Route::resource('expedients', ExpedientController::class);
-    
-    // OPCIÓN B: Si quieres definir manualmente solo las que necesitas ahora:
-    // Route::get('/expedients', [ExpedientController::class, 'index'])->name('expedients.index');
-    // Route::get('/expedients/create', [ExpedientController::class, 'create'])->name('expedients.create');
-    // Route::post('/expedients', [ExpedientController::class, 'store'])->name('expedients.store');
 });
+
+// 3. Personas (auth + verified)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('personas', PersonaController::class);
+});
+
 require __DIR__.'/auth.php';

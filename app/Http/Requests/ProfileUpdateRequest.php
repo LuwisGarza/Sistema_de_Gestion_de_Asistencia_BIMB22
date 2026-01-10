@@ -41,6 +41,7 @@ class ProfileUpdateRequest extends FormRequest
             // Username: requerido, sin espacios (alpha_dash permite letras, números, guiones y guiones bajos)
             // usa Rule::unique para evitar duplicados pero ignorando el registro actual.
             'username' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
