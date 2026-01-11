@@ -17,7 +17,7 @@ class Asistencia extends Model
         'observaciones',
     ];
 
-    // Relaciones
+    // Relaciones de persona, estado_asistencia y detalle_indisponibilidad
     public function persona()
     {
         return $this->belongsTo(Persona::class, 'persona_id', 'persona_id');

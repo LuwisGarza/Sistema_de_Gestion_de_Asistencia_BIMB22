@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Persona extends Model
-{
+{ // Implementación de SoftDeletes
     use SoftDeletes;
 
-    protected $table = 'persona';
-    protected $primaryKey = 'persona_id';
+    protected $table = 'persona'; // Definición de la tabla
+    protected $primaryKey = 'persona_id'; // Definición de la llave primaria
 
     protected $fillable = [
-        'nombres',
-        'apellidos',
-        'cedula',
-        'fecha_nacimiento',
-        'direccion',
-        'telefono',
-        'activo',
-        'fecha_baja',
+        'nombres', // Nombres de la persona
+        'apellidos', // Apellidos de la persona
+        'cedula', // Cédula de identidad
+        'fecha_nacimiento', // Fecha de nacimiento
+        'direccion', // Dirección de residencia
+        'telefono', // Número de teléfono
+        'activo', // Estado activo/inactivo
+        'fecha_baja', // Fecha de baja (si aplica)
     ];
 
     // Relación: Persona -> DatosMilitares
@@ -35,4 +35,3 @@ class Persona extends Model
         return $this->hasMany(Asistencia::class, 'persona_id', 'persona_id');
     }
 }
-

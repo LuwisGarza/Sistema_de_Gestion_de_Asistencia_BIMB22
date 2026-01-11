@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecutar las migraciones.
      */
     public function up(): void
-    {//Creación de tabla asistencia
+    { //Creación de tabla asistencia
         Schema::create('asistencia', function (Blueprint $table) {
             // Llave primaria
             $table->id('asistencia_id');
@@ -29,11 +29,10 @@ return new class extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**
-     * Reverse the migrations.
+     * Revertir las migraciones.
      */
     public function down(): void
     {

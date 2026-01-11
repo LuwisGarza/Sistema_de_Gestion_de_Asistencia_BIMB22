@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecutar las migraciones.
      */
     public function up(): void
-    {//Creación de tabla datos_militares
+    { //Creación de tabla datos_militares
         Schema::create('datos_militares', function (Blueprint $table) {
             // Llave primaria
             $table->id('militar_id');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('persona_id')
                 ->constrained('persona', 'persona_id')
                 ->restrictOnDelete();
-                
+
             // Llave foránea a tabla jerarquia_militar
             $table->foreignId('grado_id')
                 ->constrained('jerarquia_militar', 'grado_id');
@@ -30,11 +30,10 @@ return new class extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**
-     * Reverse the migrations.
+     * Revertir las migraciones.
      */
     public function down(): void
     {

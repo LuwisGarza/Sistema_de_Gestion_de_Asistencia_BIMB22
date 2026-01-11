@@ -1,7 +1,7 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import { Link, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     Home,
     Users,
@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const { auth, personasCount } = usePage().props; // Agregar personasCount
+    const user = auth.user;
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeMenu, setActiveMenu] = useState("dashboard");
 
@@ -26,7 +27,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const menuItems = [
         {
             id: "dashboard",
-            label: "Panel de Control",
+            label: "Información General",
             icon: Home,
             href: route("dashboard"),
             badge: null,
@@ -36,41 +37,35 @@ export default function AuthenticatedLayout({ header, children }) {
             label: "Personal",
             icon: Users,
             href: route("personas.index"),
-            badge: "148",
         },
         {
             id: "asistencias",
             label: "Asistencias",
             icon: Calendar,
             href: "/asistencias",
-            badge: "92%",
         },
         {
             id: "jerarquias",
             label: "Jerarquías",
             icon: Shield,
             href: "/jerarquias",
-            badge: "8",
         },
         {
             id: "permisos",
             label: "Permisos",
             icon: FileText,
             href: "/permisos",
-            badge: "5",
         },
         {
             id: "reportes",
             label: "Reportes",
             icon: BarChart3,
             href: "/reportes",
-            badge: "12",
         },
         {
             id: "config",
             label: "Configuración",
             icon: Settings,
-            href: "/configuracion",
         },
     ];
 
@@ -90,9 +85,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="flex items-center justify-between p-4 border-b border-gray-800">
                     {!sidebarCollapsed && (
                         <Link href="/" className="flex items-center space-x-3">
-                            <ApplicationLogo className="h-8 w-8 text-white" />
+                            {/*Logo de la aplicación */}
                             <span className="text-xl font-bold">
-                                Sistema Militar
+                                Disponibles e Indisponibles
                             </span>
                         </Link>
                     )}
@@ -209,7 +204,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         </svg>
                                     </button>
                                 </Dropdown.Trigger>
-                                <Dropdown.Content align="right" width="48">
+                                <Dropdown.Content align="right" width="0">
                                     <Dropdown.Link href={route("profile.edit")}>
                                         <User className="h-4 w-4 mr-2 inline" />
                                         Perfil
@@ -253,7 +248,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 year: "numeric",
                                                 month: "long",
                                                 day: "numeric",
-                                            }
+                                            },
                                         )}
                                     </p>
                                 </div>

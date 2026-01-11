@@ -12,10 +12,10 @@ class OrigenStatus_3_6_0 extends Model
     protected $table = 'origen_status_3_6_0';
     protected $primaryKey = 'list';
     public $incrementing = true;
-    
+
     // AÑADE 'nombre' aquí
     protected $fillable = ['nombre', 'descripcion'];
-    
+
     // Relación con expedientes (si es necesario)
     public function expedientes()
     {

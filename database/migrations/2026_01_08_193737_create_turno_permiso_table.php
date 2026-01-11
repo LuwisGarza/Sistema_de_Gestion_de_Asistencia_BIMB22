@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecutar las migraciones.
      */
     public function up(): void
-    {//Creación de tabla turno_permiso
+    { //Creación de tabla turno_permiso
         Schema::create('turno_permiso', function (Blueprint $table) {
             $table->id('turno_permiso_id');
             $table->string('tipo_permiso', 30);
@@ -24,7 +24,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Revertir las migraciones.
      */
     public function down(): void
     {

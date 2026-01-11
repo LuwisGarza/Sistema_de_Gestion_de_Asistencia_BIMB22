@@ -11,9 +11,18 @@ class PersonaController extends Controller
 {
     public function index()
     {
+        $personas = Persona::whereNull('deleted_at')->paginate(10);
+
+        // Calcular estadísticas básicas
+        $stats = [
+            'total' => Persona::whereNull('deleted_at')->count(),
+            'activas' => Persona::whereNull('deleted_at')->where('activo', true)->count(),
+            'inactivas' => Persona::whereNull('deleted_at')->where('activo', false)->count(),
+        ];
+
         return Inertia::render('Personas/Index', [
-            'personas' => Persona::paginate(10),
-            
+            'personas' => $personas,
+            'stats' => $stats, // ← Agregar esto
         ]);
     }
 
@@ -27,17 +36,27 @@ class PersonaController extends Controller
         $validated = $request->validate([
             'nombres' => 'required|string|max:180',
             'apellidos' => 'required|string|max:180',
-            'cedula' => 'required|string|max:13|unique:persona,cedula',
+            'cedula' => [
+                'nullable', // Cambiado a nullable
+                'string',
+                'max:13',
+                // Validar unicidad solo en registros NO eliminados
+                Rule::unique('persona', 'cedula')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+            ],
             'fecha_nacimiento' => 'nullable|date',
             'direccion' => 'nullable|string',
             'telefono' => 'nullable|string|max:20',
+            'rango_militar' => 'nullable|string|max:100', // Agregado
         ]);
 
         Persona::create(array_merge($validated, [
-            'activo' => true, // por defecto activo al crear
+            'activo' => true,
         ]));
 
-        return redirect()->route('personas.index');
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona creada exitosamente.');
     }
 
     public function edit(Persona $persona)
@@ -53,26 +72,49 @@ class PersonaController extends Controller
             'nombres' => 'required|string|max:180',
             'apellidos' => 'required|string|max:180',
             'cedula' => [
-                'required',
+                'nullable', // Cambiado a nullable
                 'string',
                 'max:13',
-                Rule::unique('persona')->ignore($persona->persona_id, 'persona_id'),
+                // Validar unicidad solo en registros NO eliminados, excluyendo esta persona
+                Rule::unique('persona', 'cedula')
+                    ->where(function ($query) {
+                        return $query->whereNull('deleted_at');
+                    })
+                    ->ignore($persona->persona_id, 'persona_id'),
             ],
             'fecha_nacimiento' => 'nullable|date',
             'direccion' => 'nullable|string',
             'telefono' => 'nullable|string|max:20',
+            'rango_militar' => 'nullable|string|max:100', // Agregado
             'activo' => 'boolean',
         ]);
 
         $persona->update($validated);
 
-        return redirect()->route('personas.index');
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona actualizada exitosamente.');
     }
 
     public function destroy(Persona $persona)
     {
         $persona->delete(); // soft delete
 
-        return redirect()->route('personas.index');
+        return redirect()->route('personas.index')
+            ->with('success', 'Persona eliminada exitosamente.');
+    }
+
+    // Método opcional para obtener estadísticas generales
+    public function estadisticas()
+    {
+        $total = Persona::whereNull('deleted_at')->count();
+        $activas = Persona::whereNull('deleted_at')->where('activo', true)->count();
+        $inactivas = Persona::whereNull('deleted_at')->where('activo', false)->count();
+
+        return response()->json([
+            'total' => $total,
+            'activas' => $activas,
+            'inactivas' => $inactivas,
+            'porcentajeActivas' => $total > 0 ? round(($activas / $total) * 100, 2) : 0,
+        ]);
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Ejecutar las migraciones.
      */
     public function up(): void
     {   //Creación de tabla estado_asistencia
@@ -19,11 +19,10 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
-     * Reverse the migrations.
+     * Revertir las migraciones.
      */
     public function down(): void
     {

@@ -14,8 +14,9 @@ import {
     XCircle,
 } from "lucide-react";
 import { useState } from "react";
+import PersonasStats from "@/Components/PersonasStats";
 
-export default function Index({ auth, personas }) {
+export default function Index({ auth, personas, stats }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 
@@ -31,7 +32,7 @@ export default function Index({ auth, personas }) {
             persona.apellidos
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
-            persona.cedula.toLowerCase().includes(searchTerm.toLowerCase())
+            persona.cedula.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     return (
@@ -44,15 +45,23 @@ export default function Index({ auth, personas }) {
                             <h2 className="text-xl font-semibold">
                                 Gestión de Personas
                             </h2>
-                            <p className="text-sm text-gray-600">
-                                Total de personas: {personas.total}
-                            </p>
                         </div>
                     </div>
                 </div>
             }
         >
             <Head title="Personal" />
+
+            {/* sección de estadísticas */}
+            {stats && (
+                <div className="mb-10">
+                    <PersonasStats
+                        total={stats.total || personas.total}
+                        activas={stats.activas || 0}
+                        inactivas={stats.inactivas || 0}
+                    />
+                </div>
+            )}
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 {/* Header con búsqueda y acciones */}
@@ -225,7 +234,7 @@ export default function Index({ auth, personas }) {
                                                     __html: link.label,
                                                 }}
                                             />
-                                        )
+                                        ),
                                 )}
                             </div>
                         </div>

@@ -9,14 +9,14 @@ use Tighten\Ziggy\Ziggy;
 class HandleInertiaRequests extends Middleware
 {
     /**
-     * The root template that is loaded on the first page visit.
+     * la raiz de la vista de la aplicación.
      *
      * @var string
      */
     protected $rootView = 'app';
 
     /**
-     * Determine the current asset version.
+     * determina la versión de los activos que se deben usar.
      */
     public function version(Request $request): ?string
     {
@@ -24,7 +24,7 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default.
+     * define los datos compartidos con todas las solicitudes Inertia.
      *
      * @return array<string, mixed>
      */
@@ -35,7 +35,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn () => [
+            'ziggy' => fn() => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
