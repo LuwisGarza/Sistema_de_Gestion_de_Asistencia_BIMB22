@@ -223,8 +223,7 @@ export default function Login({ status, canResetPassword }) {
                     {/* Información adicional */}
                     <div className="text-center mt-4">
                         <p className="text-muted small mb-3">
-                            Sistema desarrollado con Laravel, Inertia.js y
-                            React.
+                            Sistema desarrollado con:
                         </p>
 
                         {/* Iconos de tecnologías */}

@@ -50,9 +50,6 @@ export default function Register() {
                                 <h2 className="h3 mb-2 fw-bold">
                                     Crear Cuenta
                                 </h2>
-                                <p className="mb-0 opacity-75 small">
-                                    Registrate si es tu primera vez aquÍ
-                                </p>
                             </div>
                         </div>
 
