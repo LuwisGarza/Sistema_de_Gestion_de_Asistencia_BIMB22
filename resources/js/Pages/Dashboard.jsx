@@ -9,42 +9,53 @@ import {
     AlertCircle,
     Clock,
     CheckCircle,
+    Info,
 } from "lucide-react";
 
-export default function Dashboard({ auth }) {
-    // Tarjetas de estadísticas
+export default function Dashboard({ auth, stats }) {
+    // Si no vienen stats desde el backend, usar valores por defecto
+    const dashboardStats = stats || {
+        total: 0,
+        activas: 0,
+        inactivas: 0,
+        asistenciaHoy: 0,
+        permisosPendientes: 0,
+    };
+
+    // Calcular porcentaje de asistencia
+    const asistenciaPorcentaje =
+        dashboardStats.total > 0
+            ? Math.round((dashboardStats.activas / dashboardStats.total) * 100)
+            : 0;
+
+    // Tarjetas de estadísticas CON DATOS REALES
     const statCards = [
         {
             title: "Personal Total",
-            value: "2",
-            change: "+2 este mes",
+            value: dashboardStats.total.toString(),
+            change: `${dashboardStats.activas} activos, ${dashboardStats.inactivas} inactivos`,
             icon: Users,
-            color: "bg-blue-500",
+            color: "bg-primary",
+            textColor: "text-primary",
             href: "/personas",
         },
         {
-            title: "Asistencia Hoy",
-            value: "92%",
-            change: "+3% vs ayer",
-            icon: Calendar,
-            color: "bg-green-500",
-            href: "/asistencias",
-        },
-        {
             title: "Disponibles",
-            value: "135",
-            change: "91% del total",
+            value: dashboardStats.activas.toString(),
+            change: `${asistenciaPorcentaje}% del total`,
             icon: Shield,
-            color: "bg-emerald-500",
+            color: "bg-success",
+            textColor: "text-success",
             href: "/personas?activo=1",
         },
         {
-            title: "Permisos",
-            value: "5",
-            change: "2 por terminar",
-            icon: FileText,
-            color: "bg-amber-500",
-            href: "/permisos",
+            title: "Indisponibles",
+            value: dashboardStats.inactivas.toString(),
+            change: `${100 - asistenciaPorcentaje}% del total`,
+            icon: Shield,
+            color: "bg-warning",
+            textColor: "text-warning",
+            href: "/personas?activo=0",
         },
     ];
 
@@ -55,24 +66,28 @@ export default function Dashboard({ auth }) {
             action: "Sargento García registró asistencia",
             user: "Luis García",
             type: "success",
+            icon: CheckCircle,
         },
         {
             time: "Hace 15 min",
             action: "Nueva persona agregada",
             user: "Carlos Pérez",
             type: "info",
+            icon: FileText,
         },
         {
             time: "Hace 1 hora",
             action: "Permiso aprobado para Rodríguez",
             user: "Ana Rodríguez",
             type: "warning",
+            icon: AlertCircle,
         },
         {
             time: "Hace 2 horas",
             action: "Reporte mensual generado",
             user: "Sistema",
             type: "info",
+            icon: FileText,
         },
     ];
 
@@ -80,183 +95,240 @@ export default function Dashboard({ auth }) {
         <AuthenticatedLayout user={auth.user} header="Panel de Control">
             <Head title="Dashboard" />
 
-            <div className="space-y-6">
-                {/* 🎯 Tarjetas de Estadísticas */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="container-fluid mt-4">
+                {/* 🎯 Tarjetas de Estadísticas CON DATOS REALES */}
+                <div className="row g-4 mb-4">
                     {statCards.map((card, index) => (
-                        <Link
-                            key={index}
-                            href={card.href}
-                            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">
-                                        {card.title}
-                                    </p>
-                                    <p className="text-3xl font-bold text-gray-900 mt-2">
-                                        {card.value}
-                                    </p>
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        {card.change}
-                                    </p>
+                        <div key={index} className="col-12 col-sm-6 col-lg-3">
+                            <Link
+                                href={card.href}
+                                className="card text-decoration-none border-0 shadow-sm h-100 hover-shadow transition-all"
+                                style={{ minHeight: "140px" }}
+                            >
+                                <div className="card-body d-flex flex-column justify-content-between">
+                                    <div className="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 className="card-subtitle mb-2 text-muted">
+                                                {card.title}
+                                            </h6>
+                                            <h3 className="card-title fw-bold mb-0">
+                                                {card.value}
+                                            </h3>
+                                            <small
+                                                className={`${card.textColor}`}
+                                            >
+                                                {card.change}
+                                            </small>
+                                        </div>
+                                        <div
+                                            className={`${card.color} p-3 rounded-circle`}
+                                        >
+                                            <card.icon
+                                                className="text-white"
+                                                size={24}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mt-3">
+                                        <span className="text-primary text-decoration-underline small">
+                                            Ver detalles →
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className={`${card.color} p-3 rounded-lg`}>
-                                    <card.icon className="h-6 w-6 text-white" />
-                                </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        </div>
                     ))}
                 </div>
 
-                {/* 📊 Gráfico de Asistencia (Placeholder) */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                            Asistencia Semanal
-                        </h3>
-                        <Link
-                            href="/asistencias"
-                            className="text-blue-600 hover:text-blue-800 text-sm"
-                        >
-                            Ver detalles →
-                        </Link>
-                    </div>
-                    <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                        <div className="text-center">
-                            <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                            <p className="text-gray-500">
-                                Gráfico de asistencia semanal
-                            </p>
-                            <p className="text-sm text-gray-400 mt-2">
-                                (Se integrará con datos reales)
-                            </p>
+                {/* 📊 Gráfico de Asistencia */}
+                <div className="row mb-4">
+                    <div className="col-12">
+                        <div className="card border-0 shadow-sm">
+                            <div className="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
+                                <h5 className="card-title mb-0 fw-bold">
+                                    <TrendingUp className="me-2" size={20} />
+                                    Asistencia Semanal
+                                </h5>
+                                <Link
+                                    href="/asistencias"
+                                    className="btn btn-sm btn-outline-primary"
+                                >
+                                    Ver detalles →
+                                </Link>
+                            </div>
+                            <div className="card-body">
+                                <div className="d-flex align-items-center justify-content-center bg-light rounded-3 p-5">
+                                    <div className="text-center">
+                                        <TrendingUp
+                                            className="text-muted mb-3"
+                                            size={48}
+                                        />
+                                        <p className="text-muted mb-2">
+                                            Gráfico de asistencia semanal
+                                        </p>
+                                        <small className="text-muted">
+                                            (Se integrará con datos reales)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="row g-4">
                     {/* ⚠️ Alertas y Recordatorios */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
-                            Alertas del Sistema
-                        </h3>
-                        <div className="space-y-4">
-                            <div className="flex items-start p-3 bg-red-50 border border-red-100 rounded-lg">
-                                <div className="bg-red-100 p-2 rounded mr-3">
-                                    <Users className="h-5 w-5 text-red-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-red-800">
-                                        Datos incompletos
-                                    </h4>
-                                    <p className="text-sm text-red-600 mt-1">
-                                        3 personas sin datos militares completos
-                                    </p>
-                                    <Link
-                                        href="/datos-militares"
-                                        className="text-red-700 text-sm mt-2 inline-block"
-                                    >
-                                        Completar ahora →
-                                    </Link>
-                                </div>
+                    <div className="col-12 col-lg-6">
+                        <div className="card border-0 shadow-sm h-100">
+                            <div className="card-header bg-white border-0 py-3">
+                                <h5 className="card-title mb-0 fw-bold">
+                                    <AlertCircle
+                                        className="me-2 text-warning"
+                                        size={20}
+                                    />
+                                    Alertas del Sistema
+                                </h5>
                             </div>
+                            <div className="card-body">
+                                {dashboardStats.inactivas > 0 && (
+                                    <div className="alert alert-danger d-flex align-items-start mb-3">
+                                        <div className="me-3">
+                                            <Shield size={20} />
+                                        </div>
+                                        <div className="flex-grow-1">
+                                            <h6 className="alert-heading fw-bold mb-1">
+                                                Personas indisponibles
+                                            </h6>
+                                            <p className="mb-1 small">
+                                                {dashboardStats.inactivas}{" "}
+                                                personas están marcadas como
+                                                indisponibles
+                                            </p>
+                                            <Link
+                                                href="/personas?activo=0"
+                                                className="alert-link text-decoration-none"
+                                            >
+                                                Revisar →
+                                            </Link>
+                                        </div>
+                                    </div>
+                                )}
 
-                            <div className="flex items-start p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                                <div className="bg-blue-100 p-2 rounded mr-3">
-                                    <Clock className="h-5 w-5 text-blue-600" />
+                                <div className="alert alert-primary d-flex align-items-start mb-3">
+                                    <div className="me-3">
+                                        <Clock size={20} />
+                                    </div>
+                                    <div className="flex-grow-1">
+                                        <h6 className="alert-heading fw-bold mb-1">
+                                            Documentos por vencer
+                                        </h6>
+                                        <p className="mb-1 small">
+                                            5 documentos vencen este mes
+                                        </p>
+                                        <Link
+                                            href="/documentos"
+                                            className="alert-link text-decoration-none"
+                                        >
+                                            Revisar →
+                                        </Link>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="font-medium text-blue-800">
-                                        Documentos por vencer
-                                    </h4>
-                                    <p className="text-sm text-blue-600 mt-1">
-                                        5 documentos vencen este mes
-                                    </p>
-                                    <Link
-                                        href="/documentos"
-                                        className="text-blue-700 text-sm mt-2 inline-block"
-                                    >
-                                        Revisar →
-                                    </Link>
-                                </div>
-                            </div>
 
-                            <div className="flex items-start p-3 bg-green-50 border border-green-100 rounded-lg">
-                                <div className="bg-green-100 p-2 rounded mr-3">
-                                    <CheckCircle className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-green-800">
-                                        Cumpleaños hoy
-                                    </h4>
-                                    <p className="text-sm text-green-600 mt-1">
-                                        Sargento García cumple años hoy
-                                    </p>
-                                    <Link
-                                        href="/personas/1"
-                                        className="text-green-700 text-sm mt-2 inline-block"
-                                    >
-                                        Felicitar →
-                                    </Link>
+                                <div className="alert alert-success d-flex align-items-start">
+                                    <div className="me-3">
+                                        <CheckCircle size={20} />
+                                    </div>
+                                    <div className="flex-grow-1">
+                                        <h6 className="alert-heading fw-bold mb-1">
+                                            Cumpleaños hoy
+                                        </h6>
+                                        <p className="mb-1 small">
+                                            Sargento García cumple años hoy
+                                        </p>
+                                        <Link
+                                            href="/personas/1"
+                                            className="alert-link text-decoration-none"
+                                        >
+                                            Felicitar →
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* 📝 Actividad Reciente */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Actividad Reciente
-                        </h3>
-                        <div className="space-y-4">
-                            {recentActivities.map((activity, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-start pb-4 border-b border-gray-100 last:border-0 last:pb-0"
-                                >
-                                    <div
-                                        className={`p-2 rounded mr-3 ${
-                                            activity.type === "success"
-                                                ? "bg-green-100"
-                                                : activity.type === "warning"
-                                                ? "bg-amber-100"
-                                                : "bg-blue-100"
-                                        }`}
-                                    >
-                                        {activity.type === "success" && (
-                                            <CheckCircle className="h-4 w-4 text-green-600" />
-                                        )}
-                                        {activity.type === "warning" && (
-                                            <AlertCircle className="h-4 w-4 text-amber-600" />
-                                        )}
-                                        {activity.type === "info" && (
-                                            <FileText className="h-4 w-4 text-blue-600" />
-                                        )}
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm text-gray-900">
-                                            {activity.action}
-                                        </p>
-                                        <div className="flex items-center justify-between mt-1">
-                                            <span className="text-xs text-gray-500">
-                                                {activity.user}
-                                            </span>
-                                            <span className="text-xs text-gray-400">
-                                                {activity.time}
-                                            </span>
+                    <div className="col-12 col-lg-6">
+                        <div className="card border-0 shadow-sm h-100">
+                            <div className="card-header bg-white border-0 py-3">
+                                <h5 className="card-title mb-0 fw-bold">
+                                    Actividad Reciente
+                                </h5>
+                            </div>
+                            <div className="card-body p-0">
+                                <div className="list-group list-group-flush">
+                                    {recentActivities.map((activity, index) => (
+                                        <div
+                                            key={index}
+                                            className="list-group-item list-group-item-action border-0 py-3 px-4"
+                                        >
+                                            <div className="d-flex align-items-start">
+                                                <div
+                                                    className={`p-2 rounded-circle me-3 ${
+                                                        activity.type ===
+                                                        "success"
+                                                            ? "bg-success bg-opacity-10 text-success"
+                                                            : activity.type ===
+                                                                "warning"
+                                                              ? "bg-warning bg-opacity-10 text-warning"
+                                                              : "bg-info bg-opacity-10 text-info"
+                                                    }`}
+                                                >
+                                                    <activity.icon size={18} />
+                                                </div>
+                                                <div className="flex-grow-1">
+                                                    <p className="mb-1">
+                                                        {activity.action}
+                                                    </p>
+                                                    <div className="d-flex justify-content-between align-items-center">
+                                                        <small className="text-muted">
+                                                            {activity.user}
+                                                        </small>
+                                                        <small className="text-muted">
+                                                            {activity.time}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    ))}
                                 </div>
-                            ))}
+                                <div className="card-footer bg-white border-0 py-3">
+                                    <Link
+                                        href="/actividad"
+                                        className="btn btn-sm btn-outline-primary w-100"
+                                    >
+                                        Ver toda la actividad
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                        <Link
-                            href="/actividad"
-                            className="text-blue-600 hover:text-blue-800 text-sm mt-4 inline-block"
-                        >
-                            Ver toda la actividad →
-                        </Link>
+                    </div>
+                </div>
+
+                {/* 🚨 Estadísticas del sistema */}
+                <div className="alert alert-info mt-4">
+                    <div className="d-flex align-items-center">
+                        <Info className="me-2" size={20} />
+                        <div>
+                            <strong>Datos reales del sistema</strong>
+                            <p className="mb-0 small">
+                                Las estadísticas mostradas son reales: Total de
+                                personas: {dashboardStats.total}, Disponibles:{" "}
+                                {dashboardStats.activas}, Indisponibles:{" "}
+                                {dashboardStats.inactivas}.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

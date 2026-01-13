@@ -15,10 +15,12 @@ import {
     ChevronRight,
     LogOut,
     User,
+    CheckCircle,
+    XCircle,
 } from "lucide-react";
 
 export default function AuthenticatedLayout({ header, children }) {
-    const { auth, personasCount } = usePage().props; // Agregar personasCount
+    const { auth, personasCount } = usePage().props;
     const user = auth.user;
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -70,35 +72,54 @@ export default function AuthenticatedLayout({ header, children }) {
     ];
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            {/* 🎯 SIDEBAR VERTICAL IZQUIERDA (Dashboard) */}
+        <div className="d-flex min-vh-100 bg-light">
+            {/* 🎯 SIDEBAR VERTICAL IZQUIERDA - Bootstrap */}
             <div
                 className={`
-                fixed inset-y-0 left-0 z-50
-                bg-gray-900 text-white
-                transition-all duration-300 ease-in-out
-                ${sidebarCollapsed ? "w-20" : "w-64"}
-                flex flex-col
+                fixed-top start-0 h-100 z-50
+                bg-dark text-white
+                transition-all duration-300
+                ${sidebarCollapsed ? "sidebar-collapsed" : "sidebar-expanded"}
+                d-flex flex-column
             `}
+                style={{
+                    width: sidebarCollapsed ? "80px" : "256px",
+                    transition: "width 0.3s ease-in-out",
+                }}
             >
                 {/* Logo y Botón Colapsar */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-800">
+                <div className="d-flex align-items-center justify-content-between p-3 border-bottom border-secondary">
                     {!sidebarCollapsed && (
-                        <Link href="/" className="flex items-center space-x-3">
-                            {/*Logo de la aplicación */}
-                            <span className="text-xl font-bold">
+                        <Link
+                            href="/"
+                            className="d-flex align-items-center text-decoration-none text-white"
+                        >
+                            <ApplicationLogo
+                                className="me-2"
+                                style={{ height: "32px" }}
+                            />
+                            <span className="fs-5 fw-bold">
                                 Disponibles e Indisponibles
                             </span>
                         </Link>
                     )}
                     {sidebarCollapsed && (
-                        <Link href="/" className="flex justify-center">
-                            <ApplicationLogo className="h-8 w-8 text-white" />
+                        <Link
+                            href="/"
+                            className="d-flex justify-content-center w-100"
+                        >
+                            <ApplicationLogo
+                                className="text-white"
+                                style={{ height: "32px" }}
+                            />
                         </Link>
                     )}
                     <button
                         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                        className="p-1.5 rounded-lg hover:bg-gray-800 transition-colors"
+                        className="btn btn-sm btn-outline-light border-0"
+                        aria-label={
+                            sidebarCollapsed ? "Expandir menú" : "Colapsar menú"
+                        }
                     >
                         {sidebarCollapsed ? (
                             <ChevronRight className="h-5 w-5" />
@@ -109,31 +130,38 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
 
                 {/* Menú de Navegación */}
-                <nav className="flex-1 overflow-y-auto py-4">
-                    <ul className="space-y-1 px-2">
+                <nav className="flex-grow-1 overflow-auto py-3">
+                    <ul className="nav flex-column px-2 gap-1">
                         {menuItems.map((item) => (
-                            <li key={item.id}>
+                            <li key={item.id} className="nav-item">
                                 <Link
-                                    href={item.href}
+                                    href={item.href || "#"}
                                     onClick={() => setActiveMenu(item.id)}
                                     className={`
-                                        flex items-center px-3 py-2.5 rounded-lg
-                                        transition-colors duration-200
-                                        ${
-                                            activeMenu === item.id
-                                                ? "bg-blue-600 text-white"
-                                                : "hover:bg-gray-800 text-gray-300"
-                                        }
+                                        nav-link d-flex align-items-center rounded-2
+                                        text-white text-decoration-none py-3 px-3
+                                        ${activeMenu === item.id ? "bg-primary" : "hover-bg-gray-800"}
+                                        transition-colors
                                     `}
+                                    style={{
+                                        backgroundColor:
+                                            activeMenu === item.id
+                                                ? "#0d6efd"
+                                                : "transparent",
+                                        minHeight: "48px",
+                                    }}
                                 >
-                                    <item.icon className="h-5 w-5 flex-shrink-0" />
+                                    <item.icon
+                                        className="flex-shrink-0"
+                                        size={20}
+                                    />
                                     {!sidebarCollapsed && (
-                                        <span className="ml-3 flex-1">
+                                        <span className="ms-3 flex-grow-1">
                                             {item.label}
                                         </span>
                                     )}
                                     {item.badge && !sidebarCollapsed && (
-                                        <span className="ml-2 px-2 py-0.5 text-xs bg-gray-700 rounded-full">
+                                        <span className="badge bg-secondary ms-2">
                                             {item.badge}
                                         </span>
                                     )}
@@ -144,81 +172,117 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     {/* Separador */}
                     <div className="px-3 py-4">
-                        <div className="border-t border-gray-800"></div>
+                        <hr className="border-secondary my-0" />
                     </div>
 
                     {/* Estadísticas Rápidas (solo cuando expandido) */}
                     {!sidebarCollapsed && (
-                        <div className="px-3 space-y-3">
-                            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        <div className="px-3 mb-3">
+                            <h6 className="text-uppercase text-muted small mb-3">
                                 Hoy
-                            </h3>
-                            <div className="grid grid-cols-2 gap-2">
-                                <div className="bg-gray-800 p-2 rounded">
-                                    <div className="text-sm text-green-400">
-                                        Presentes
+                            </h6>
+                            <div className="row g-2">
+                                <div className="col-6">
+                                    <div className="bg-secondary bg-opacity-25 p-2 rounded-2">
+                                        <div className="d-flex align-items-center">
+                                            <CheckCircle
+                                                className="text-success me-1"
+                                                size={14}
+                                            />
+                                            <small className="text-success">
+                                                Presentes
+                                            </small>
+                                        </div>
+                                        <div className="fw-bold fs-5">125</div>
                                     </div>
-                                    <div className="text-lg font-bold">125</div>
                                 </div>
-                                <div className="bg-gray-800 p-2 rounded">
-                                    <div className="text-sm text-red-400">
-                                        Ausentes
+                                <div className="col-6">
+                                    <div className="bg-secondary bg-opacity-25 p-2 rounded-2">
+                                        <div className="d-flex align-items-center">
+                                            <XCircle
+                                                className="text-danger me-1"
+                                                size={14}
+                                            />
+                                            <small className="text-danger">
+                                                Ausentes
+                                            </small>
+                                        </div>
+                                        <div className="fw-bold fs-5">8</div>
                                     </div>
-                                    <div className="text-lg font-bold">8</div>
                                 </div>
                             </div>
                         </div>
                     )}
                 </nav>
 
-                {/* Perfil de Usuario */}
-                <div className="border-t border-gray-800 p-4">
-                    <div className="flex items-center space-x-3">
-                        <div className="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center">
-                            <User className="h-6 w-6" />
+                {/* Perfil de Usuario - Dropdown de Bootstrap */}
+                <div className="border-top border-secondary p-3">
+                    <div className="d-flex align-items-center">
+                        <div
+                            className="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                            style={{ width: "40px", height: "40px" }}
+                        >
+                            <User className="text-white" size={20} />
                         </div>
                         {!sidebarCollapsed && (
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium truncate">
+                            <div className="flex-grow-1 ms-3 min-w-0">
+                                <p className="mb-0 fw-medium text-truncate">
                                     {user.name}
                                 </p>
-                                <p className="text-xs text-gray-400 truncate">
+                                <p className="mb-0 small text-muted text-truncate">
                                     {user.email}
                                 </p>
                             </div>
                         )}
                         {!sidebarCollapsed && (
-                            <Dropdown>
-                                <Dropdown.Trigger>
-                                    <button className="text-gray-400 hover:text-white">
-                                        <svg
-                                            className="h-5 w-5"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    </button>
-                                </Dropdown.Trigger>
-                                <Dropdown.Content align="right" width="0">
-                                    <Dropdown.Link href={route("profile.edit")}>
-                                        <User className="h-4 w-4 mr-2 inline" />
-                                        Perfil
-                                    </Dropdown.Link>
-                                    <Dropdown.Link
-                                        href={route("logout")}
-                                        method="post"
-                                        as="button"
+                            <div className="dropdown">
+                                <button
+                                    className="btn btn-link text-light p-0"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    <svg
+                                        className="h-5 w-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
                                     >
-                                        <LogOut className="h-4 w-4 mr-2 inline" />
-                                        Cerrar Sesión
-                                    </Dropdown.Link>
-                                </Dropdown.Content>
-                            </Dropdown>
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                                <ul className="dropdown-menu dropdown-menu-end shadow">
+                                    <li>
+                                        <Link
+                                            className="dropdown-item d-flex align-items-center"
+                                            href={route("profile.edit")}
+                                        >
+                                            <User className="me-2" size={16} />
+                                            Perfil
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <hr className="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <Link
+                                            className="dropdown-item d-flex align-items-center text-danger"
+                                            href={route("logout")}
+                                            method="post"
+                                            as="button"
+                                        >
+                                            <LogOut
+                                                className="me-2"
+                                                size={16}
+                                            />
+                                            Cerrar Sesión
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -226,21 +290,22 @@ export default function AuthenticatedLayout({ header, children }) {
 
             {/* Contenido Principal */}
             <div
-                className={`
-                flex-1 transition-all duration-300 ease-in-out
-                ${sidebarCollapsed ? "ml-20" : "ml-64"}
-            `}
+                className="flex-grow-1 transition-all duration-300"
+                style={{
+                    marginLeft: sidebarCollapsed ? "80px" : "256px",
+                    transition: "margin-left 0.3s ease-in-out",
+                }}
             >
-                {/* Header Superior (opcional) */}
+                {/* Header Superior */}
                 {header && (
-                    <header className="bg-white shadow-sm border-b border-gray-200">
-                        <div className="px-6 py-4">
-                            <div className="flex items-center justify-between">
+                    <header className="bg-white shadow-sm border-bottom">
+                        <div className="container-fluid py-3">
+                            <div className="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h1 className="text-2xl font-semibold text-gray-900">
+                                    <h1 className="h3 mb-0 fw-bold text-dark">
                                         {header}
                                     </h1>
-                                    <p className="text-sm text-gray-600 mt-1">
+                                    <p className="text-muted small mb-0 mt-1">
                                         {new Date().toLocaleDateString(
                                             "es-ES",
                                             {
@@ -252,11 +317,33 @@ export default function AuthenticatedLayout({ header, children }) {
                                         )}
                                     </p>
                                 </div>
-                                <div className="flex items-center space-x-4">
-                                    <button className="relative p-2 text-gray-600 hover:text-gray-900">
-                                        <Bell className="h-6 w-6" />
-                                        <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                                    </button>
+                                <div className="d-flex align-items-center gap-3">
+                                    <div className="dropdown">
+                                        <button
+                                            className="btn btn-link text-dark position-relative p-0"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            <Bell className="h-6 w-6" />
+                                            <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                                <span className="visually-hidden">
+                                                    Notificaciones
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <div className="dropdown-menu dropdown-menu-end shadow">
+                                            <h6 className="dropdown-header">
+                                                Notificaciones
+                                            </h6>
+                                            <div className="dropdown-item">
+                                                <small>
+                                                    No tienes notificaciones
+                                                    nuevas
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -264,8 +351,49 @@ export default function AuthenticatedLayout({ header, children }) {
                 )}
 
                 {/* Contenido de la Página */}
-                <main className="p-6">{children}</main>
+                <main className="container-fluid py-4">{children}</main>
             </div>
+
+            {/* Estilos CSS personalizados para el sidebar */}
+            <style jsx>{`
+                .hover-bg-gray-800:hover {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                }
+
+                .sidebar-expanded {
+                    width: 256px;
+                }
+
+                .sidebar-collapsed {
+                    width: 80px;
+                }
+
+                .nav-link {
+                    transition: all 0.2s ease;
+                }
+
+                .nav-link:hover {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                }
+
+                /* Scrollbar personalizada para el sidebar */
+                nav::-webkit-scrollbar {
+                    width: 4px;
+                }
+
+                nav::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
+                nav::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 2px;
+                }
+
+                nav::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                }
+            `}</style>
         </div>
     );
 }

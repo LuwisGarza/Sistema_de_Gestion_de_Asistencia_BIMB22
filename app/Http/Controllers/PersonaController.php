@@ -13,16 +13,9 @@ class PersonaController extends Controller
     {
         $personas = Persona::whereNull('deleted_at')->paginate(10);
 
-        // Calcular estadísticas básicas
-        $stats = [
-            'total' => Persona::whereNull('deleted_at')->count(),
-            'activas' => Persona::whereNull('deleted_at')->where('activo', true)->count(),
-            'inactivas' => Persona::whereNull('deleted_at')->where('activo', false)->count(),
-        ];
-
         return Inertia::render('Personas/Index', [
             'personas' => $personas,
-            'stats' => $stats, // ← Agregar esto
+            // NOTA: Ya NO enviamos 'stats' aquí
         ]);
     }
 
@@ -37,10 +30,9 @@ class PersonaController extends Controller
             'nombres' => 'required|string|max:180',
             'apellidos' => 'required|string|max:180',
             'cedula' => [
-                'nullable', // Cambiado a nullable
+                'nullable',
                 'string',
                 'max:13',
-                // Validar unicidad solo en registros NO eliminados
                 Rule::unique('persona', 'cedula')->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
@@ -48,7 +40,7 @@ class PersonaController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'direccion' => 'nullable|string',
             'telefono' => 'nullable|string|max:20',
-            'rango_militar' => 'nullable|string|max:100', // Agregado
+            'rango_militar' => 'nullable|string|max:100',
         ]);
 
         Persona::create(array_merge($validated, [
@@ -72,10 +64,9 @@ class PersonaController extends Controller
             'nombres' => 'required|string|max:180',
             'apellidos' => 'required|string|max:180',
             'cedula' => [
-                'nullable', // Cambiado a nullable
+                'nullable',
                 'string',
                 'max:13',
-                // Validar unicidad solo en registros NO eliminados, excluyendo esta persona
                 Rule::unique('persona', 'cedula')
                     ->where(function ($query) {
                         return $query->whereNull('deleted_at');
@@ -85,7 +76,7 @@ class PersonaController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'direccion' => 'nullable|string',
             'telefono' => 'nullable|string|max:20',
-            'rango_militar' => 'nullable|string|max:100', // Agregado
+            'rango_militar' => 'nullable|string|max:100',
             'activo' => 'boolean',
         ]);
 
@@ -103,7 +94,7 @@ class PersonaController extends Controller
             ->with('success', 'Persona eliminada exitosamente.');
     }
 
-    // Método opcional para obtener estadísticas generales
+    // Mantenemos este método por si necesitas una API para estadísticas
     public function estadisticas()
     {
         $total = Persona::whereNull('deleted_at')->count();

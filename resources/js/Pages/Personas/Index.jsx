@@ -7,18 +7,15 @@ import {
     Trash2,
     Eye,
     Search,
-    Filter,
     Download,
     MoreVertical,
     CheckCircle,
     XCircle,
 } from "lucide-react";
 import { useState } from "react";
-import PersonasStats from "@/Components/PersonasStats";
 
-export default function Index({ auth, personas, stats }) {
+export default function Index({ auth, personas }) {
     const [searchTerm, setSearchTerm] = useState("");
-    const [showFilters, setShowFilters] = useState(false);
 
     const destroy = (id) => {
         if (confirm("¿Está seguro de que desea eliminar esta persona?")) {
@@ -39,12 +36,15 @@ export default function Index({ auth, personas, stats }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center gap-3">
                         <div>
-                            <h2 className="text-xl font-semibold">
+                            <h2 className="h4 fw-bold mb-0">
                                 Gestión de Personas
                             </h2>
+                            <p className="text-muted small mb-0">
+                                Total registradas: {personas.total}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -52,155 +52,156 @@ export default function Index({ auth, personas, stats }) {
         >
             <Head title="Personal" />
 
-            {/* sección de estadísticas */}
-            {stats && (
-                <div className="mb-10">
-                    <PersonasStats
-                        total={stats.total || personas.total}
-                        activas={stats.activas || 0}
-                        inactivas={stats.inactivas || 0}
-                    />
-                </div>
-            )}
+            {/* NOTA: Ya no mostramos PersonasStats aquí */}
 
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-white rounded-3 shadow-sm overflow-hidden border">
                 {/* Header con búsqueda y acciones */}
-                <div className="p-6 border-b">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Buscar por nombre, apellido o cédula..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
+                <div className="card-header bg-white border-bottom py-3">
+                    <div className="row align-items-center g-3">
+                        <div className="col-12 col-md-6">
+                            <div className="input-group">
+                                <span className="input-group-text bg-transparent border-end-0">
+                                    <Search className="text-muted" size={20} />
+                                </span>
+                                <input
+                                    type="text"
+                                    placeholder="Buscar por nombre, apellido o cédula..."
+                                    value={searchTerm}
+                                    onChange={(e) =>
+                                        setSearchTerm(e.target.value)
+                                    }
+                                    className="form-control border-start-0"
+                                />
+                            </div>
                         </div>
-
-                        <div className="flex items-center gap-3">
-                            <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50">
-                                <Download className="w-4 h-4" />
-                                Exportar
-                            </button>
-                            <Link
-                                href="/personas/create"
-                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                            >
-                                <UserPlus className="w-4 h-4" />
-                                Agregar Nuevo
-                            </Link>
+                        <div className="col-12 col-md-6">
+                            <div className="d-flex justify-content-md-end gap-2">
+                                <button className="btn btn-outline-secondary d-flex align-items-center gap-2">
+                                    <Download size={18} />
+                                    <span className="d-none d-md-inline">
+                                        Exportar
+                                    </span>
+                                </button>
+                                <Link
+                                    href="/personas/create"
+                                    className="btn btn-primary d-flex align-items-center gap-2"
+                                >
+                                    <UserPlus size={18} />
+                                    <span className="d-none d-md-inline">
+                                        Agregar Nuevo
+                                    </span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Tabla de personas */}
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50">
+                <div className="table-responsive">
+                    <table className="table table-hover mb-0">
+                        <thead className="table-light">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                                    Personal
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                                    Información
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                                    Estado
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                                    Acciones
-                                </th>
+                                <th className="ps-4">Personal</th>
+                                <th>Información</th>
+                                <th>Estado</th>
+                                <th className="pe-4 text-end">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
+                        <tbody>
                             {filteredPersonas.map((persona) => (
-                                <tr
-                                    key={persona.persona_id}
-                                    className="hover:bg-gray-50"
-                                >
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                                <Users className="w-5 h-5 text-blue-600" />
+                                <tr key={persona.persona_id}>
+                                    <td className="ps-4">
+                                        <div className="d-flex align-items-center">
+                                            <div
+                                                className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                                                style={{
+                                                    width: "40px",
+                                                    height: "40px",
+                                                }}
+                                            >
+                                                <Users
+                                                    className="text-primary"
+                                                    size={18}
+                                                />
                                             </div>
-                                            <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900">
+                                            <div>
+                                                <div className="fw-medium">
                                                     {persona.nombres}{" "}
                                                     {persona.apellidos}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
+                                                <small className="text-muted">
                                                     ID: {persona.persona_id}
-                                                </div>
+                                                </small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="text-sm text-gray-900">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="font-medium">
+                                    <td>
+                                        <div>
+                                            <div className="mb-1">
+                                                <span className="fw-medium me-1">
                                                     Cédula:
-                                                </span>{" "}
+                                                </span>
                                                 {persona.cedula}
                                             </div>
                                             {persona.telefono && (
-                                                <div className="flex items-center gap-2 text-gray-600">
-                                                    <span className="font-medium">
+                                                <div className="text-muted">
+                                                    <span className="fw-medium me-1">
                                                         Tel:
-                                                    </span>{" "}
+                                                    </span>
                                                     {persona.telefono}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td>
                                         <span
-                                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                                            className={`badge d-flex align-items-center gap-1 ${
                                                 persona.activo
-                                                    ? "bg-green-100 text-green-800"
-                                                    : "bg-red-100 text-red-800"
+                                                    ? "bg-success bg-opacity-10 text-success"
+                                                    : "bg-danger bg-opacity-10 text-danger"
                                             }`}
+                                            style={{ width: "fit-content" }}
                                         >
                                             {persona.activo ? (
                                                 <>
-                                                    <CheckCircle className="w-3 h-3" />
+                                                    <CheckCircle size={14} />
                                                     Activo
                                                 </>
                                             ) : (
                                                 <>
-                                                    <XCircle className="w-3 h-3" />
+                                                    <XCircle size={14} />
                                                     Inactivo
                                                 </>
                                             )}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div className="flex items-center gap-2">
+                                    <td className="pe-4 text-end">
+                                        <div className="btn-group btn-group-sm">
                                             <Link
                                                 href={`/personas/${persona.persona_id}`}
-                                                className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded"
+                                                className="btn btn-outline-primary"
                                                 title="Ver detalles"
                                             >
-                                                <Eye className="w-4 h-4" />
+                                                <Eye size={16} />
                                             </Link>
                                             <Link
                                                 href={`/personas/${persona.persona_id}/edit`}
-                                                className="text-green-600 hover:text-green-900 p-2 hover:bg-green-50 rounded"
+                                                className="btn btn-outline-success"
                                                 title="Editar"
                                             >
-                                                <Edit className="w-4 h-4" />
+                                                <Edit size={16} />
                                             </Link>
                                             <button
                                                 onClick={() =>
                                                     destroy(persona.persona_id)
                                                 }
-                                                className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded"
+                                                className="btn btn-outline-danger"
                                                 title="Eliminar"
                                             >
-                                                <Trash2 className="w-4 h-4" />
+                                                <Trash2 size={16} />
                                             </button>
-                                            <button className="text-gray-600 hover:text-gray-900 p-2 hover:bg-gray-50 rounded">
-                                                <MoreVertical className="w-4 h-4" />
+                                            <button className="btn btn-outline-secondary">
+                                                <MoreVertical size={16} />
                                             </button>
                                         </div>
                                     </td>
@@ -212,30 +213,40 @@ export default function Index({ auth, personas, stats }) {
 
                 {/* Footer con paginación */}
                 {personas.links && (
-                    <div className="px-6 py-4 border-t">
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-700">
-                                Mostrando {filteredPersonas.length} de{" "}
-                                {personas.total} personas
+                    <div className="card-footer bg-white border-top py-3">
+                        <div className="row align-items-center">
+                            <div className="col-12 col-md-6 mb-2 mb-md-0">
+                                <div className="text-muted">
+                                    Mostrando {filteredPersonas.length} de{" "}
+                                    {personas.total} personas
+                                </div>
                             </div>
-                            <div className="flex gap-2">
-                                {Object.entries(personas.links).map(
-                                    ([key, link]) =>
-                                        link.url && (
-                                            <Link
-                                                key={key}
-                                                href={link.url}
-                                                className={`px-3 py-1 rounded ${
-                                                    link.active
-                                                        ? "bg-blue-600 text-white"
-                                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                                }`}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: link.label,
-                                                }}
-                                            />
-                                        ),
-                                )}
+                            <div className="col-12 col-md-6">
+                                <nav className="d-flex justify-content-md-end">
+                                    <ul className="pagination pagination-sm mb-0">
+                                        {Object.entries(personas.links).map(
+                                            ([key, link]) =>
+                                                link.url && (
+                                                    <li
+                                                        key={key}
+                                                        className="page-item"
+                                                    >
+                                                        <Link
+                                                            href={link.url}
+                                                            className={`page-link ${
+                                                                link.active
+                                                                    ? "active"
+                                                                    : ""
+                                                            }`}
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: link.label,
+                                                            }}
+                                                        />
+                                                    </li>
+                                                ),
+                                        )}
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>
@@ -243,12 +254,14 @@ export default function Index({ auth, personas, stats }) {
             </div>
 
             {filteredPersonas.length === 0 && (
-                <div className="text-center py-12">
-                    <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <div className="text-center py-5">
+                    <div className="bg-light rounded-circle d-inline-flex p-4 mb-3">
+                        <Users className="text-muted" size={48} />
+                    </div>
+                    <h3 className="h5 fw-bold text-gray-900 mb-2">
                         No se encontraron personas
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-muted mb-4">
                         {searchTerm
                             ? "Intenta con otro término de búsqueda"
                             : "Comienza creando una nueva persona"}
@@ -256,9 +269,9 @@ export default function Index({ auth, personas, stats }) {
                     {!searchTerm && (
                         <Link
                             href="/personas/create"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            className="btn btn-primary d-inline-flex align-items-center gap-2"
                         >
-                            <UserPlus className="w-4 h-4" />
+                            <UserPlus size={18} />
                             Crear primera persona
                         </Link>
                     )}
