@@ -1,7 +1,17 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
+import {
+    Eye,
+    EyeOff,
+    Lock,
+    User,
+    Flame,
+    Zap,
+    Atom,
+    KeyRound,
+    ArrowRight,
+} from "lucide-react";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -28,15 +38,14 @@ export default function Login({ status, canResetPassword }) {
                     {/* Card de Login */}
                     <div className="card border-0 shadow-lg rounded-5 overflow-hidden">
                         {/* Header con fondo */}
-                        <div className="card-header bg-dark text-white py-4">
+                        <div className="card-header bg-black bg-gradient text-white py-4">
                             <div className="text-center">
+                                <div className="d-flex flex-column align-items-center">
+                                    <KeyRound className="mb-3" size={40} />
+                                </div>
                                 <h2 className="h3 mb-2 fw-bold">
-                                    Sistema de Gestión de asistencias
+                                    Inicio de Sesión
                                 </h2>
-
-                                <p className="mb-0 opacity-90">
-                                    Personal disponible e indisponible.
-                                </p>
                             </div>
                         </div>
 
@@ -183,8 +192,25 @@ export default function Login({ status, canResetPassword }) {
                                     )}
                                 </button>
 
+                                {/* Enlace a Login */}
+                                <div className="text-center mt-4 pt-3 border-top">
+                                    <p className="text-muted mb-2">
+                                        ¿Primera vez aquí?
+                                    </p>
+                                    <Link
+                                        href={route("register")}
+                                        className="btn btn-outline-primary btn-sm d-inline-flex align-items-center"
+                                    >
+                                        Crear cuenta
+                                        <ArrowRight
+                                            className="ms-2"
+                                            size={16}
+                                        />
+                                    </Link>
+                                </div>
+
                                 {/* Mensaje de bienvenida */}
-                                <div className="text-center mt-4 pt-3 border-top border-secondary">
+                                <div className="text-center mt-4 pt-3 border-top ">
                                     <p className="text-muted small mb-0">
                                         Bienvenido al sistema de gestión de
                                         asistencias
@@ -196,25 +222,76 @@ export default function Login({ status, canResetPassword }) {
 
                     {/* Información adicional */}
                     <div className="text-center mt-4">
-                        <p className="text-muted small">
-                            Sistema desarrollado con Laravel, Inertia.js y React
+                        <p className="text-muted small mb-3">
+                            Sistema desarrollado con Laravel, Inertia.js y
+                            React.
                         </p>
+
+                        {/* Iconos de tecnologías */}
+                        <div className="d-flex justify-content-center align-items-center gap-4 mt-2">
+                            {/* Laravel */}
+                            <a
+                                href="https://laravel.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-decoration-none"
+                                title="Laravel Framework"
+                            >
+                                <div className="d-flex flex-column align-items-center">
+                                    <Flame size={24} className="text-danger" />
+                                    <span className="text-muted mt-1 small">
+                                        Laravel
+                                    </span>
+                                </div>
+                            </a>
+
+                            {/* Inertia.js */}
+                            <a
+                                href="https://inertiajs.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-decoration-none"
+                                title="Inertia.js"
+                            >
+                                <div className="d-flex flex-column align-items-center">
+                                    <Zap size={24} className="text-warning" />
+                                    <span className="text-muted mt-1 small">
+                                        Inertia
+                                    </span>
+                                </div>
+                            </a>
+
+                            {/* React */}
+                            <a
+                                href="https://reactjs.org"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-decoration-none"
+                                title="React"
+                            >
+                                <div className="d-flex flex-column align-items-center">
+                                    <Atom size={24} className="text-info" />
+                                    <span className="text-muted mt-1 small">
+                                        React
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-
             {/* Estilos adicionales */}
             <style jsx>{`
                 .card {
-                    transition: transform 0.3s ease;
+                    transition: transform 0.6s ease;
                 }
 
                 .card:hover {
-                    transform: translateY(-5px);
+                    transform: translateY(-10px);
                 }
 
                 .input-group-text {
-                    transition: all 0.2s ease;
+                    transition: all 0.3s ease;
                 }
 
                 .form-control:focus {
@@ -224,8 +301,8 @@ export default function Login({ status, canResetPassword }) {
                 .btn-primary {
                     background: linear-gradient(
                         135deg,
-                        #0d6efd 0%,
-                        #0b5ed7 100%
+                        #798694 0%,
+                        #212529 100%
                     );
                     border: none;
                     transition: all 0.3s ease;
@@ -233,7 +310,7 @@ export default function Login({ status, canResetPassword }) {
 
                 .btn-primary:hover {
                     background: linear-gradient(
-                        135deg,
+                        155deg,
                         #0b5ed7 0%,
                         #0a58ca 100%
                     );

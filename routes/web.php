@@ -39,4 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('personas', PersonaController::class);
 });
 
+
+Route::get('/register', [ProfileController::class, 'create'])
+    ->middleware('guest')
+    ->name('register');
 require __DIR__ . '/auth.php';

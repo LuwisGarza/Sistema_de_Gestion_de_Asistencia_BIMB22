@@ -1,6 +1,6 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import { Link } from "@inertiajs/react";
-
+import { Download, FileText } from "lucide-react";
 export default function GuestLayout({ children }) {
     return (
         <div className="min-vh-100 d-flex flex-column bg-light">
@@ -37,21 +37,16 @@ export default function GuestLayout({ children }) {
                         <div className="col-md-6">
                             <p className="mb-0 text-muted small">
                                 &copy; {new Date().getFullYear()} Sistema de
-                                Gestión. Todos los derechos reservados.
+                                Gestión, Todos los derechos reservados.
                             </p>
                         </div>
                         <div className="col-md-6 text-md-end">
                             <Link
-                                href="/privacy"
+                                href="/Manual/Manual.pdf"
+                                download
                                 className="text-muted small me-3 text-decoration-none"
                             >
-                                Política de Privacidad
-                            </Link>
-                            <Link
-                                href="/terms"
-                                className="text-muted small text-decoration-none"
-                            >
-                                Términos de Servicio
+                                Manual de Usuario
                             </Link>
                         </div>
                     </div>
