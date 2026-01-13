@@ -69,6 +69,12 @@ export default function Login({ status, canResetPassword }) {
                             <form onSubmit={submit}>
                                 {/* Campo Usuario */}
                                 <div className="mb-4">
+                                    <label
+                                        htmlFor="username"
+                                        className="form-label fw-medium"
+                                    >
+                                        Nombre de Usuario
+                                    </label>
                                     <div className="input-group">
                                         <span className="input-group-text bg-light border-end-0">
                                             <User
@@ -81,7 +87,11 @@ export default function Login({ status, canResetPassword }) {
                                             type="text"
                                             name="username"
                                             value={data.username}
-                                            className={`form-control ${errors.username ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.username
+                                                    ? "is-invalid"
+                                                    : ""
+                                            }`}
                                             autoComplete="username"
                                             autoFocus={true}
                                             onChange={(e) =>
@@ -94,7 +104,7 @@ export default function Login({ status, canResetPassword }) {
                                         />
                                     </div>
                                     {errors.username && (
-                                        <div className="invalid-feedback d-block">
+                                        <div className="invalid-feedback d-block mt-1">
                                             {errors.username}
                                         </div>
                                     )}
@@ -102,6 +112,12 @@ export default function Login({ status, canResetPassword }) {
 
                                 {/* Campo Contraseña */}
                                 <div className="mb-4">
+                                    <label
+                                        htmlFor="password"
+                                        className="form-label fw-medium"
+                                    >
+                                        Contraseña
+                                    </label>
                                     <div className="input-group">
                                         <span className="input-group-text bg-light border-end-0">
                                             <Lock
@@ -118,7 +134,11 @@ export default function Login({ status, canResetPassword }) {
                                             }
                                             name="password"
                                             value={data.password}
-                                            className={`form-control ${errors.password ? "is-invalid" : ""} border-start-1`}
+                                            className={`form-control ${
+                                                errors.password
+                                                    ? "is-invalid"
+                                                    : ""
+                                            } border-start-1`}
                                             autoComplete="current-password"
                                             onChange={(e) =>
                                                 setData(
@@ -154,7 +174,7 @@ export default function Login({ status, canResetPassword }) {
                                         </button>
                                     </div>
                                     {errors.password && (
-                                        <div className="invalid-feedback d-block">
+                                        <div className="invalid-feedback d-block mt-1">
                                             {errors.password}
                                         </div>
                                     )}
@@ -162,6 +182,27 @@ export default function Login({ status, canResetPassword }) {
 
                                 {/* Recordarme y Olvidé contraseña */}
                                 <div className="d-flex justify-content-between align-items-center mb-4">
+                                    <div className="form-check">
+                                        <input
+                                            type="checkbox"
+                                            id="remember"
+                                            name="remember"
+                                            checked={data.remember}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "remember",
+                                                    e.target.checked,
+                                                )
+                                            }
+                                            className="form-check-input"
+                                        />
+                                        <label
+                                            htmlFor="remember"
+                                            className="form-check-label small"
+                                        >
+                                            Recordarme
+                                        </label>
+                                    </div>
                                     {canResetPassword && (
                                         <Link
                                             href={route("password.request")}
@@ -192,7 +233,7 @@ export default function Login({ status, canResetPassword }) {
                                     )}
                                 </button>
 
-                                {/* Enlace a Login */}
+                                {/* Enlace a Registro */}
                                 <div className="text-center mt-4 pt-3 border-top">
                                     <p className="text-muted mb-2">
                                         ¿Primera vez aquí?
@@ -283,18 +324,40 @@ export default function Login({ status, canResetPassword }) {
             <style jsx>{`
                 .card {
                     transition: transform 0.6s ease;
+                    animation: fadeInUp 0.8s ease-out;
                 }
 
                 .card:hover {
                     transform: translateY(-10px);
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+                }
+
+                .card-header {
+                    background: linear-gradient(
+                        135deg,
+                        #000000 0%,
+                        #333333 100%
+                    );
                 }
 
                 .input-group-text {
                     transition: all 0.3s ease;
+                    background-color: #f8f9fa !important;
+                }
+
+                .form-control {
+                    transition: all 0.3s ease;
+                    border-color: #dee2e6;
                 }
 
                 .form-control:focus {
                     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+                    border-color: #86b7fe;
+                    transform: translateY(-1px);
+                }
+
+                .form-control.is-invalid:focus {
+                    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
                 }
 
                 .btn-primary {
@@ -305,9 +368,11 @@ export default function Login({ status, canResetPassword }) {
                     );
                     border: none;
                     transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
                 }
 
-                .btn-primary:hover {
+                .btn-primary:hover:not(:disabled) {
                     background: linear-gradient(
                         155deg,
                         #0b5ed7 0%,
@@ -320,6 +385,26 @@ export default function Login({ status, canResetPassword }) {
                 .btn-primary:disabled {
                     opacity: 0.65;
                     transform: none !important;
+                }
+
+                .btn-outline-primary {
+                    transition: all 0.3s ease;
+                }
+
+                .btn-outline-primary:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+                }
+
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
                 }
             `}</style>
         </GuestLayout>
