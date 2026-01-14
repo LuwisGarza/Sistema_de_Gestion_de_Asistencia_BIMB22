@@ -317,34 +317,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                         )}
                                     </p>
                                 </div>
-                                <div className="d-flex align-items-center gap-3">
-                                    <div className="dropdown">
-                                        <button
-                                            className="btn btn-link text-dark position-relative p-0"
-                                            type="button"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <Bell className="h-6 w-6" />
-                                            <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
-                                                <span className="visually-hidden">
-                                                    Notificaciones
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <div className="dropdown-menu dropdown-menu-end shadow">
-                                            <h6 className="dropdown-header">
-                                                Notificaciones
-                                            </h6>
-                                            <div className="dropdown-item">
-                                                <small>
-                                                    No tienes notificaciones
-                                                    nuevas
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </header>

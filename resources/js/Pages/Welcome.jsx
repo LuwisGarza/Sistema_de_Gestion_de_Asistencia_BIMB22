@@ -1,75 +1,413 @@
 import { Head, Link } from "@inertiajs/react";
+import { useState, useEffect } from "react";
+import {
+    Zap,
+    Shield,
+    Cpu,
+    Rocket,
+    UserPlus,
+    LogIn,
+    Sparkles,
+    CheckCircle,
+    Layers,
+    Code2,
+    ArrowRight,
+} from "lucide-react";
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
-    const handleImageError = () => {
-        document
-            .getElementById("screenshot-container")
-            ?.classList.add("!hidden");
-        document.getElementById("docs-card")?.classList.add("!row-span-1");
-        document
-            .getElementById("docs-card-content")
-            ?.classList.add("!flex-row");
-        document.getElementById("background")?.classList.add("!hidden");
-    };
+export default function Welcome() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        // Transición suave de carga
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+
+        // Barra de progreso animada
+        const interval = setInterval(() => {
+            setProgress((prev) => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    return 100;
+                }
+                return prev + 2;
+            });
+        }, 30);
+
+        return () => {
+            clearTimeout(timer);
+            clearInterval(interval);
+        };
+    }, []);
+
+    const features = [
+        {
+            icon: <Code2 size={24} />,
+            title: "React Components",
+            description: "Interfaz reactiva y componentes reutilizables",
+            color: "text-cyan-500",
+            bgColor: "bg-cyan-500/10",
+        },
+        {
+            icon: <Layers size={24} />,
+            title: "Bootstrap 5",
+            description: "Diseño responsive y sistema de grid",
+            color: "text-indigo-500",
+            bgColor: "bg-indigo-500/10",
+        },
+        {
+            icon: <Sparkles size={24} />,
+            title: "Inertia.js",
+            description: "SPA sin complejidad, full-stack simple",
+            color: "text-purple-500",
+            bgColor: "bg-purple-500/10",
+        },
+    ];
 
     return (
         <>
-            <Head title="Welcome" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-                <img
-                    id="background"
-                    className="absolute -left-20 top-0 max-w-[877px]"
-                    src="https://laravel.com/assets/img/welcome/background.svg"
-                />
-                <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-2 lg:justify-center">
-                                <svg
-                                    className="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]"
-                                    viewBox="0 0 62 65"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
-                            </div>
-                            <nav className="-mx-3 flex flex-1 justify-end">
-                                {auth.user ? (
-                                    <Link
-                                        href={route("dashboard")}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Pagina Principal
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route("login")}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Iniciar Sesión
-                                        </Link>
-                                        <Link
-                                            href={route("register")}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Registro
-                                        </Link>
-                                    </>
-                                )}
-                            </nav>
-                        </header>
+            <Head title="Bienvenido - Sistema de Gestión" />
 
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Hola Mundo
-                        </footer>
+            {/* Botones de acceso */}
+            <div className="fixed top-6 right-6 z-50 flex gap-1 animate__animated animate__fadeIn">
+                <Link
+                    href={route("register")}
+                    className="btn btn-primary w-50 py-3 fw-bold mb-0 center-block d-block mx-auto rounded-pill"
+                >
+                    <UserPlus size={20} />
+                    Registrarse
+                </Link>
+                <Link
+                    href={route("login")}
+                    className="btn btn-primary w-50 py-3 fw-bold mb-0 center-block d-block mx-auto rounded-pill"
+                >
+                    <LogIn size={20} />
+                    Iniciar Sesión
+                </Link>
+            </div>
+
+            {/* Overlay de carga */}
+            <div
+                className={`fixed inset-0 z-40 bg-dark transition-all duration-500 ${
+                    isLoading ? "opacity-100 visible" : "opacity-0 invisible"
+                }`}
+            >
+                <div className="min-vh-100 d-flex align-items-center justify-content-center">
+                    <div className="text-center">
+                        {/* Logo animado simple */}
+                        <div className="mb-5">
+                            <div className="spinner-container mx-auto mb-4">
+                                <div className="spinner-circle"></div>
+                                <div className="spinner-circle"></div>
+                                <div className="spinner-circle"></div>
+                            </div>
+
+                            <h1 className="text-white fw-bold mb-3">
+                                <span className="text-primary">Sistema </span>
+                                Gestor de Asistencia
+                            </h1>
+                            <p className="text-light opacity-75">
+                                Cargando experiencia optimizada...
+                            </p>
+                        </div>
+
+                        {/* Barra de progreso minimalista */}
+                        <div className="w-100" style={{ maxWidth: "400px" }}>
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="text-light small">
+                                    Cargando
+                                </span>
+                                <span className="text-light small">
+                                    {progress}%
+                                </span>
+                            </div>
+                            <div
+                                className="progress bg-dark bg-opacity-50"
+                                style={{ height: "4px" }}
+                            >
+                                <div
+                                    className="progress-bar bg-primary"
+                                    style={{
+                                        width: `${progress}%`,
+                                        transition: "width 0.3s ease",
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Contenido principal */}
+            <div
+                className={`min-vh-100 bg-gradient-dark transition-opacity duration-500 ${
+                    isLoading ? "opacity-0" : "opacity-100"
+                }`}
+            >
+                <div className="container">
+                    <div className="row align-items-center min-vh-100 py-5">
+                        <div className="col-lg-6">
+                            <div className="animate__animated animate__fadeInUp">
+                                {/* Encabezado */}
+                                <div className="mb-4">
+                                    <div className="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 mb-3 d-inline-flex align-items-center gap-2">
+                                        <Sparkles size={16} />
+                                        <span>React + Bootstrap + Inertia</span>
+                                    </div>
+                                    <h1 className="display-4 fw-bold text-white mb-4">
+                                        Desarrollo Moderno
+                                        <span className="d-block text-primary">
+                                            Sin Complejidad
+                                        </span>
+                                    </h1>
+                                    <p className="lead text-light opacity-75 mb-5">
+                                        Combina la potencia de React con la
+                                        simplicidad de Bootstrap y la eficiencia
+                                        de Inertia.js. Crea aplicaciones web
+                                        impresionantes con menos código y mejor
+                                        rendimiento.
+                                    </p>
+                                </div>
+
+                                {/* Características */}
+                                <div className="mb-5">
+                                    <div className="row g-3">
+                                        {features.map((feature, index) => (
+                                            <div
+                                                key={index}
+                                                className="col-md-4"
+                                            >
+                                                <div
+                                                    className={`p-3 rounded-3 ${feature.bgColor} border-0`}
+                                                >
+                                                    <div
+                                                        className={`${feature.color} mb-2`}
+                                                    >
+                                                        {feature.icon}
+                                                    </div>
+                                                    <h6 className="text-white fw-semibold mb-1">
+                                                        {feature.title}
+                                                    </h6>
+                                                    <p className="text-light opacity-75 small mb-0">
+                                                        {feature.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="animate__animated animate__fadeInUp animate__delay-1s">
+                                {/* Card de demostración */}
+                                <div className="card border-0 bg-dark bg-opacity-50 rounded-4 shadow-lg overflow-hidden">
+                                    <div className="card-body p-4">
+                                        <div className="d-flex align-items-center gap-3 mb-4">
+                                            <div className="rounded-circle bg-primary bg-opacity-20 p-2">
+                                                <CheckCircle
+                                                    size={24}
+                                                    className="text-primary"
+                                                />
+                                            </div>
+                                            <div>
+                                                <h5 className="text-white mb-0">
+                                                    Ventajas Principales
+                                                </h5>
+                                                <p className="text-light opacity-75 small mb-0">
+                                                    Todo lo que necesitas en un
+                                                    solo stack
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="row g-3">
+                                            {[
+                                                {
+                                                    icon: <Zap size={20} />,
+                                                    title: "Rendimiento Óptimo",
+                                                    description:
+                                                        "Carga rápida y respuesta instantánea",
+                                                },
+                                                {
+                                                    icon: <Shield size={20} />,
+                                                    title: "Seguro por Defecto",
+                                                    description:
+                                                        "Autenticación integrada y protegida",
+                                                },
+                                                {
+                                                    icon: <Cpu size={20} />,
+                                                    title: "Escalable",
+                                                    description:
+                                                        "Crece con las necesidades de tu proyecto",
+                                                },
+                                                {
+                                                    icon: <Rocket size={20} />,
+                                                    title: "Productividad",
+                                                    description:
+                                                        "Desarrollo ágil y mantenimiento simple",
+                                                },
+                                            ].map((item, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="col-6"
+                                                >
+                                                    <div className="p-3 bg-dark bg-opacity-25 rounded-3 h-100">
+                                                        <div className="d-flex align-items-start gap-2">
+                                                            <div className="text-primary mt-1">
+                                                                {item.icon}
+                                                            </div>
+                                                            <div>
+                                                                <h6 className="text-white fw-semibold mb-1">
+                                                                    {item.title}
+                                                                </h6>
+                                                                <p className="text-light opacity-75 small mb-0">
+                                                                    {
+                                                                        item.description
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Indicador de tecnologías */}
+                                        <div className="mt-4 pt-4 border-top border-secondary">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <span className="text-light opacity-75 small">
+                                                    Tecnologías utilizadas:
+                                                </span>
+                                                <div className="d-flex gap-2">
+                                                    <span className="badge bg-cyan bg-opacity-20 text-cyan">
+                                                        React 18
+                                                    </span>
+                                                    <span className="badge bg-indigo bg-opacity-20 text-indigo">
+                                                        Bootstrap 5
+                                                    </span>
+                                                    <span className="badge bg-purple bg-opacity-20 text-purple">
+                                                        Inertia
+                                                    </span>
+                                                    <span className="badge bg-purple bg-opacity-20 text-purple">
+                                                        Laravel
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Estilos CSS */}
+            <style jsx>{`
+                .min-vh-100 {
+                    min-height: 100vh;
+                }
+
+                .bg-gradient-dark {
+                    background: linear-gradient(
+                        135deg,
+                        #0f172a 0%,
+                        #1e293b 100%
+                    );
+                }
+
+                /* Spinner simple */
+                .spinner-container {
+                    position: relative;
+                    width: 80px;
+                    height: 80px;
+                }
+
+                .spinner-circle {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    border: 2px solid transparent;
+                    border-top-color: #667eea;
+                    border-radius: 50%;
+                    animation: spin 1.5s linear infinite;
+                }
+
+                .spinner-circle:nth-child(2) {
+                    border-top-color: #764ba2;
+                    animation-delay: 0.5s;
+                }
+
+                .spinner-circle:nth-child(3) {
+                    border-top-color: #6b46c1;
+                    animation-delay: 1s;
+                }
+
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                /* Transiciones y efectos */
+                .hover-shadow {
+                    transition: box-shadow 0.3s ease;
+                }
+
+                .hover-shadow:hover {
+                    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3) !important;
+                }
+
+                .hover-bg-light:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+                }
+
+                /* Animaciones de entrada */
+                .animate__animated {
+                    animation-duration: 0.8s;
+                }
+
+                .animate__delay-1s {
+                    animation-delay: 0.3s;
+                }
+
+                /* Responsive */
+                @media (max-width: 768px) {
+                    .display-4 {
+                        font-size: 2.5rem;
+                    }
+
+                    .fixed.top-6.right-6 {
+                        top: 1rem;
+                        right: 1rem;
+                    }
+
+                    .btn-lg {
+                        padding: 0.75rem 1.5rem;
+                    }
+
+                    .spinner-container {
+                        width: 60px;
+                        height: 60px;
+                    }
+                }
+
+                @media (max-width: 576px) {
+                    .col-md-4 {
+                        margin-bottom: 1rem;
+                    }
+
+                    .col-6 {
+                        margin-bottom: 1rem;
+                    }
+                }
+            `}</style>
         </>
     );
 }
