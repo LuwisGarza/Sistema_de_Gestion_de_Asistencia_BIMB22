@@ -321,7 +321,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             </div>
             {/* Estilos adicionales */}
-            <style jsx>{`
+            <style>{`
                 .card {
                     transition: transform 0.6s ease;
                     animation: fadeInUp 0.8s ease-out;

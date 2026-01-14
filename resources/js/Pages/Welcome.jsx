@@ -306,7 +306,7 @@ export default function Welcome() {
             </div>
 
             {/* Estilos CSS */}
-            <style jsx>{`
+            <style>{`
                 .min-vh-100 {
                     min-height: 100vh;
                 }

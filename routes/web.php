@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ExpedientController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\BackupController; // ✅ NUEVA IMPORT
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -39,6 +40,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('personas', PersonaController::class);
 });
 
+// 4. Backups (auth + verified) - ✅ NUEVO
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/backups', [BackupController::class, 'index'])->name('backups.index');
+    Route::post('/backups', [BackupController::class, 'create'])->name('backups.create');
+    Route::get('/backups/download/{filename}', [BackupController::class, 'download'])->name('backups.download');
+    Route::delete('/backups/{filename}', [BackupController::class, 'destroy'])->name('backups.destroy');
+});
 
 Route::get('/register', [ProfileController::class, 'create'])
     ->middleware('guest')

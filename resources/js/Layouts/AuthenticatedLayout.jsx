@@ -17,6 +17,7 @@ import {
     User,
     CheckCircle,
     XCircle,
+    HardDrive, // ✅ ÍCONO PARA BACKUPS AÑADIDO
 } from "lucide-react";
 
 export default function AuthenticatedLayout({ header, children }) {
@@ -64,10 +65,12 @@ export default function AuthenticatedLayout({ header, children }) {
             icon: BarChart3,
             href: "/reportes",
         },
+        // ✅ MÓDULO DE BACKUPS AÑADIDO
         {
-            id: "config",
-            label: "Configuración",
-            icon: Settings,
+            id: "backups",
+            label: "Mantenimiento",
+            icon: HardDrive,
+            href: route("backups.index"),
         },
     ];
 
@@ -140,7 +143,11 @@ export default function AuthenticatedLayout({ header, children }) {
                                     className={`
                                         nav-link d-flex align-items-center rounded-2
                                         text-white text-decoration-none py-3 px-3
-                                        ${activeMenu === item.id ? "bg-primary" : "hover-bg-gray-800"}
+                                        ${
+                                            activeMenu === item.id
+                                                ? "bg-primary"
+                                                : "hover-bg-gray-800"
+                                        }
                                         transition-colors
                                     `}
                                     style={{
@@ -174,45 +181,6 @@ export default function AuthenticatedLayout({ header, children }) {
                     <div className="px-3 py-4">
                         <hr className="border-secondary my-0" />
                     </div>
-
-                    {/* Estadísticas Rápidas (solo cuando expandido) */}
-                    {!sidebarCollapsed && (
-                        <div className="px-3 mb-3">
-                            <h6 className="text-uppercase text-muted small mb-3">
-                                Hoy
-                            </h6>
-                            <div className="row g-2">
-                                <div className="col-6">
-                                    <div className="bg-secondary bg-opacity-25 p-2 rounded-2">
-                                        <div className="d-flex align-items-center">
-                                            <CheckCircle
-                                                className="text-success me-1"
-                                                size={14}
-                                            />
-                                            <small className="text-success">
-                                                Presentes
-                                            </small>
-                                        </div>
-                                        <div className="fw-bold fs-5">125</div>
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="bg-secondary bg-opacity-25 p-2 rounded-2">
-                                        <div className="d-flex align-items-center">
-                                            <XCircle
-                                                className="text-danger me-1"
-                                                size={14}
-                                            />
-                                            <small className="text-danger">
-                                                Ausentes
-                                            </small>
-                                        </div>
-                                        <div className="fw-bold fs-5">8</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </nav>
 
                 {/* Perfil de Usuario - Dropdown de Bootstrap */}
@@ -327,7 +295,7 @@ export default function AuthenticatedLayout({ header, children }) {
             </div>
 
             {/* Estilos CSS personalizados para el sidebar */}
-            <style jsx>{`
+            <style>{`
                 .hover-bg-gray-800:hover {
                     background-color: rgba(255, 255, 255, 0.1) !important;
                 }

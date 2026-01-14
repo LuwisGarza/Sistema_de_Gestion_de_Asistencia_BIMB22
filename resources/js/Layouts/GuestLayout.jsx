@@ -54,7 +54,7 @@ export default function GuestLayout({ children }) {
             </footer>
 
             {/* Estilos adicionales */}
-            <style jsx>{`
+            <style>{`
                 .min-vh-100 {
                     min-height: 100vh;
                 }

@@ -344,7 +344,7 @@ export default function Register() {
             </div>
 
             {/* ESTILOS Y ANIMACIONES */}
-            <style jsx>{`
+            <style>{`
                 .card {
                     transition:
                         transform 0.6s ease,
